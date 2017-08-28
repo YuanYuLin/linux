@@ -9,6 +9,9 @@ dst_def_config = ""
 build_dir = ""
 initramfs_name = "initramfs.cpio.gz"
 initramfs_file = ""
+build_arch = ""
+image_path = ""
+image_output_name = "linux_image"
 
 def set_global(args):
     global pkg_path
@@ -18,11 +21,23 @@ def set_global(args):
     global dst_def_config 
     global build_dir 
     global initramfs_file
+    global build_arch
+    global image_path
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
+    arch = ops.getEnv("ARCH_ALT")
+    build_arch = ops.getEnv("ARCH")
     tarball = ops.path_join(pkg_path, "linux-4.3.tar.xz")
     build_dir = ops.path_join(output_dir, "linux-4.3")
-    src_def_config = ops.path_join(pkg_path, "default.config")
+    if arch == "armel":
+        src_def_config = ops.path_join(pkg_path, "default_armel.config")
+        image_path = "arch/arm/boot/zImage"
+    elif arch == "x86_64":
+        src_def_config = ops.path_join(pkg_path, "default_x86_64.config")
+        build_arch = "x86"
+        image_path = "arch/x86/boot/bzImage"
+    else:
+        sys.exit(1)
     dst_def_config = ops.path_join(build_dir, ".config")
     initramfs_file = ops.path_join(iopc.getOutputRootDir(), initramfs_name)
 
@@ -60,12 +75,12 @@ def MAIN_BUILD(args):
     ops.copyto(initramfs_file, build_dir)
 
     extra_conf = []
-    extra_conf.append("ARCH=" + ops.getEnv("ARCH"))
+    extra_conf.append("ARCH=" + build_arch)
     iopc.make(build_dir, extra_conf)
 
     extra_conf = []
     extra_conf.append("modules")
-    extra_conf.append("ARCH=" + ops.getEnv("ARCH"))
+    extra_conf.append("ARCH=" + build_arch)
     iopc.make(build_dir, extra_conf)
 
     '''
@@ -80,7 +95,7 @@ def MAIN_BUILD(args):
 def MAIN_INSTALL(args):
     set_global(args)
 
-    ops.copyto(ops.path_join(build_dir, "arch/arm/boot/zImage"), iopc.getOutputRootDir())
+    ops.copyto(ops.path_join(build_dir, image_path), ops.path_join(iopc.getOutputRootDir(), image_output_name))
     '''
     extra_conf = []
     extra_conf.append("modules_install")
