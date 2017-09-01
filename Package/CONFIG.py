@@ -23,17 +23,18 @@ def set_global(args):
     global initramfs_file
     global build_arch
     global image_path
+    pkg_args = args["pkg_args"]
+    def_cfg_version = "default_" + pkg_args["version"] + ".config"
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
     arch = ops.getEnv("ARCH_ALT")
     build_arch = ops.getEnv("ARCH")
     tarball = ops.path_join(pkg_path, "linux-4.3.tar.xz")
     build_dir = ops.path_join(output_dir, "linux-4.3")
+    src_def_config = ops.path_join(pkg_path, def_cfg_version)
     if arch == "armel":
-        src_def_config = ops.path_join(pkg_path, "default_armel.config")
         image_path = "arch/arm/boot/zImage"
     elif arch == "x86_64":
-        src_def_config = ops.path_join(pkg_path, "default_x86_64.config")
         build_arch = "x86"
         image_path = "arch/x86/boot/bzImage"
     else:
