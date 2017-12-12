@@ -1,0 +1,19 @@
+--- linux/arch/arm/mach-iopc_rpi2/Kconfig	1970-01-01 08:00:00.000000000 +0800
++++ linux-4.1.42/arch/arm/mach-iopc_rpi2/Kconfig	2017-09-19 16:21:27.984818877 +0800
+@@ -0,0 +1,16 @@
++menu "Broadcom BCM2709 Implementations"
++	depends on ARCH_IOPC_RPI2
++
++config MACH_IOPC_RPI2
++	bool "Broadcom BCM2709 Development Platform"
++	help
++	  Include support for the Broadcom(R) BCM2709 platform.
++
++config IOPC_RPI2_NOL2CACHE
++	bool "Videocore L2 cache disable"
++	depends on MACH_IOPC_RPI2
++        default y
++        help
++          Do not allow ARM to use GPU's L2 cache. Requires disable_l2cache in config.txt.
++
++endmenu

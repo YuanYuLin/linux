@@ -1,0 +1,21 @@
+diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+index f192a2a..708eae6 100644
+--- a/arch/arm/kernel/process.c
++++ b/arch/arm/kernel/process.c
+@@ -98,6 +98,16 @@ void arch_cpu_idle_dead(void)
+ }
+ #endif
+ 
++char iopc_rpi2_reboot_mode = 'h';
++
++int __init reboot_setup(char *str)
++{
++	iopc_rpi2_reboot_mode = str[0];
++	return 1;
++}
++
++__setup("reboot=", reboot_setup);
++
+ void __show_regs(struct pt_regs *regs)
+ {
+ 	unsigned long flags;

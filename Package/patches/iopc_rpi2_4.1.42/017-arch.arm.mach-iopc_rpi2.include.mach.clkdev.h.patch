@@ -1,0 +1,10 @@
+--- linux/arch/arm/mach-iopc_rpi2/include/mach/clkdev.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-4.1.42/arch/arm/mach-iopc_rpi2/include/mach/clkdev.h	2016-04-15 00:45:41.000000000 +0800
+@@ -0,0 +1,7 @@
++#ifndef __ASM_MACH_CLKDEV_H
++#define __ASM_MACH_CLKDEV_H
++
++#define __clk_get(clk) ({ 1; })
++#define __clk_put(clk) do { } while (0)
++
++#endif

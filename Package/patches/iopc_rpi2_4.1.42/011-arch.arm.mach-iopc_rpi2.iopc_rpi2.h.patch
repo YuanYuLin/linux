@@ -1,0 +1,34 @@
+--- linux/arch/arm/mach-iopc_rpi2/iopc_rpi2.h	1970-01-01 08:00:00.000000000 +0800
++++ linux-4.1.42/arch/arm/mach-iopc_rpi2/iopc_rpi2.h	2017-09-20 13:17:23.406501568 +0800
+@@ -0,0 +1,31 @@
++/*
++ *
++ */
++
++#ifndef __IOPC_RPI2_H
++#define __IOPC_RPI2_H
++
++#include <linux/amba/bus.h>
++
++extern void __init bcm2708_init(void);
++extern void __init bcm2708_init_irq(void);
++extern void __init bcm2708_map_io(void);
++extern struct sys_timer bcm2708_timer;
++extern unsigned int mmc_status(struct device *dev);
++
++#define AMBA_DEVICE(name, busid, base, plat)			\
++static struct amba_device name##_device = {			\
++	.dev		= {					\
++		.coherent_dma_mask = ~0,			\
++		.init_name = busid,				\
++		.platform_data = plat,				\
++	},							\
++	.res		= {					\
++		.start	= base##_BASE,		\
++		.end	= (base##_BASE) + SZ_4K - 1,\
++		.flags	= IORESOURCE_MEM,			\
++	},							\
++	.irq		= base##_IRQ,				\
++}
++
++#endif

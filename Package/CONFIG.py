@@ -10,8 +10,11 @@ build_dir = ""
 initramfs_name = "initramfs.cpio.gz"
 initramfs_file = ""
 build_arch = ""
+build_format = ""
 image_path = ""
 image_output_name = "linux_image"
+#LINUX_VERSION="linux-4.3"
+#LINUX_VERSION="linux-4.1.42"
 
 def set_global(args):
     global pkg_path
@@ -22,23 +25,30 @@ def set_global(args):
     global build_dir 
     global initramfs_file
     global build_arch
+    global build_format
     global image_path
     pkg_args = args["pkg_args"]
-    def_cfg_version = "default_" + pkg_args["version"] + ".config"
+    def_cfg_version = "default_" + pkg_args["config"] + ".config"
+    LINUX_VERSION = pkg_args["version"]
+    build_format = pkg_args["format"]
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
     arch = ops.getEnv("ARCH_ALT")
     build_arch = ops.getEnv("ARCH")
-    tarball = ops.path_join(pkg_path, "linux-4.3.tar.xz")
-    build_dir = ops.path_join(output_dir, "linux-4.3")
+    tarball = ops.path_join(pkg_path, LINUX_VERSION + ".tar.xz")
+    build_dir = ops.path_join(output_dir, LINUX_VERSION)
     src_def_config = ops.path_join(pkg_path, def_cfg_version)
     if arch == "armel":
-        image_path = "arch/arm/boot/zImage"
+        if build_format == "uImage":
+            image_path = "arch/arm/boot/uImage"
+        else:
+            image_path = "arch/arm/boot/zImage"
     elif arch == "x86_64":
         build_arch = "x86"
         image_path = "arch/x86/boot/bzImage"
     else:
         sys.exit(1)
+
     dst_def_config = ops.path_join(build_dir, ".config")
     initramfs_file = ops.path_join(iopc.getOutputRootDir(), initramfs_name)
 
@@ -66,7 +76,8 @@ def MAIN_PATCH(args, patch_group_name):
 def MAIN_CONFIGURE(args):
     set_global(args)
 
-    ops.kbuild_config_replace(src_def_config, dst_def_config, "CONFIG_INITRAMFS_SOURCE", initramfs_name)
+    ops.copyto(src_def_config, dst_def_config)
+    ops.kbuild_config_replace(dst_def_config, "CONFIG_INITRAMFS_SOURCE", initramfs_name)
 
     return True
 
@@ -74,9 +85,13 @@ def MAIN_BUILD(args):
     set_global(args)
 
     ops.copyto(initramfs_file, build_dir)
+    opt_format = ""
 
     extra_conf = []
     extra_conf.append("ARCH=" + build_arch)
+    if build_format == "uImage":
+        opt_format = "uImage"
+        extra_conf.append(opt_format)
     iopc.make(build_dir, extra_conf)
 
     extra_conf = []

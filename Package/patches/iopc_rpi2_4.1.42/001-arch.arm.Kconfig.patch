@@ -1,0 +1,40 @@
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 19f4cc6..0874d15 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -314,6 +314,26 @@ choice
+ 	default ARCH_VERSATILE if !MMU
+ 	default ARCH_MULTIPLATFORM if MMU
+ 
++
++config ARCH_IOPC_RPI2
++	bool "Broadcom BCM2709 family"
++	select ARCH_HAS_BARRIERS if SMP
++	select CPU_V7
++	select HAVE_SMP
++	select ARM_AMBA
++	select MIGHT_HAVE_CACHE_L2X0
++	select HAVE_SCHED_CLOCK
++	select NEED_MACH_MEMORY_H
++	select NEED_MACH_IO_H
++	select COMMON_CLK
++	select ARCH_HAS_CPUFREQ
++	select GENERIC_CLOCKEVENTS
++	select MACH_IOPC_RPI2
++	select VC4
++	select FIQ
++	help
++	  This enables support for Broadcom BCM2709 boards.
++
+ config ARCH_MULTIPLATFORM
+ 	bool "Allow multiple platforms to be selected"
+ 	depends on MMU
+@@ -824,6 +844,8 @@ config ARCH_VIRT
+ # Kconfigs may be included either alphabetically (according to the
+ # plat- suffix) or along side the corresponding mach-* source.
+ #
++
++source "arch/arm/mach-iopc_rpi2/Kconfig"
+ source "arch/arm/mach-mvebu/Kconfig"
+ 
+ source "arch/arm/mach-alpine/Kconfig"

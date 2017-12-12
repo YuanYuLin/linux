@@ -2,5 +2,44 @@
 "COMMON":
 [
 {"enabled":0, "name": ""}
+],
+"IOPC_RPI2_4.1.42":
+[
+{"enabled":1, "name":"iopc_rpi2_4.1.42/000-workable.rpi2.patch"}
+],
+"IOPC_RPI2":
+[
+{"enabled":1, "name": "iopc_rpi2/001-arch.arm.Kconfig.patch"},
+{"enabled":1, "name": "iopc_rpi2/002-arch.arm.Makefile.patch"},
+{"enabled":1, "name": "iopc_rpi2/003-arch.arm.include.asm.entry-macro-multi.S.patch"},
+{"enabled":1, "name": "iopc_rpi2/004-arch.arm.kernel.process.c.patch"},
+{"enabled":1, "name": "iopc_rpi2/005-arch.arm.tools.mach-types.patch"},
+{"enabled":1, "name": "iopc_rpi2/006-drivers.clocksource.arm_arch_timer.c.patch"},
+{"enabled":1, "name": "iopc_rpi2/007-arch.arm.mach-iopc_rpi2.armctrl.c.patch"},
+{"enabled":1, "name": "iopc_rpi2/008-arch.arm.mach-iopc_rpi2.armctrl.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/009-arch.arm.mach-iopc_rpi2.delay.S.patch"},
+{"enabled":1, "name": "iopc_rpi2/010-arch.arm.mach-iopc_rpi2.iopc_rpi2.c.patch"},
+{"enabled":1, "name": "iopc_rpi2/011-arch.arm.mach-iopc_rpi2.iopc_rpi2.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/012-arch.arm.mach-iopc_rpi2.Kconfig.patch"},
+{"enabled":1, "name": "iopc_rpi2/013-arch.arm.mach-iopc_rpi2.Makefile.patch"},
+{"enabled":1, "name": "iopc_rpi2/014-arch.arm.mach-iopc_rpi2.Makefile.boot.patch"},
+{"enabled":1, "name": "iopc_rpi2/015-arch.arm.mach-iopc_rpi2.include.mach.arm_control.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/016-arch.arm.mach-iopc_rpi2.include.mach.barriers.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/017-arch.arm.mach-iopc_rpi2.include.mach.clkdev.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/018-arch.arm.mach-iopc_rpi2.include.mach.debug-macro.S.patch"},
+{"enabled":1, "name": "iopc_rpi2/019-arch.arm.mach-iopc_rpi2.include.mach.entry-macro.S.patch"},
+{"enabled":1, "name": "iopc_rpi2/020-arch.arm.mach-iopc_rpi2.include.mach.frc.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/021-arch.arm.mach-iopc_rpi2.include.mach.gpio.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/022-arch.arm.mach-iopc_rpi2.include.mach.hardware.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/023-arch.arm.mach-iopc_rpi2.include.mach.io.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/024-arch.arm.mach-iopc_rpi2.include.mach.irqs.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/025-arch.arm.mach-iopc_rpi2.include.mach.memory.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/026-arch.arm.mach-iopc_rpi2.include.mach.platform.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/027-arch.arm.mach-iopc_rpi2.include.mach.system.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/028-arch.arm.mach-iopc_rpi2.include.mach.timex.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/029-arch.arm.mach-iopc_rpi2.include.mach.uncompress.h.patch"},
+{"enabled":1, "name": "iopc_rpi2/030-arch.arm.mach-iopc_rpi2.include.mach.vmalloc.h.patch"},
+{"enabled":0, "name": ""}
 ]
 }
+

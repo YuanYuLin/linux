@@ -1,0 +1,9 @@
+diff --git a/arch/arm/tools/mach-types b/arch/arm/tools/mach-types
+index 2ed1b8a..f3c641a 100644
+--- a/arch/arm/tools/mach-types
++++ b/arch/arm/tools/mach-types
+@@ -1006,3 +1006,4 @@ eco5_bx2		MACH_ECO5_BX2		ECO5_BX2		4572
+ eukrea_cpuimx28sd	MACH_EUKREA_CPUIMX28SD	EUKREA_CPUIMX28SD	4573
+ domotab			MACH_DOMOTAB		DOMOTAB			4574
+ pfla03			MACH_PFLA03		PFLA03			4575
++iopc_rpi2		MACH_IOPC_RPI2		IOPC_RPI2		3139

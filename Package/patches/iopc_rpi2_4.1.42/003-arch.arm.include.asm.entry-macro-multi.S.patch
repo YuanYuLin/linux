@@ -1,0 +1,20 @@
+diff --git a/arch/arm/include/asm/entry-macro-multi.S b/arch/arm/include/asm/entry-macro-multi.S
+index 469a2b3..9eef1a1 100644
+--- a/arch/arm/include/asm/entry-macro-multi.S
++++ b/arch/arm/include/asm/entry-macro-multi.S
+@@ -1,5 +1,7 @@
+ #include <asm/assembler.h>
+ 
++//#ifndef CONFIG_ARCH_BCM2709
++#if 0
+ /*
+  * Interrupt handling.  Preserves r7, r8, r9
+  */
+@@ -28,6 +30,7 @@
+ #endif
+ 9997:
+ 	.endm
++#endif
+ 
+ 	.macro	arch_irq_handler, symbol_name
+ 	.align	5
