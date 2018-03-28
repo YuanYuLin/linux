@@ -7,14 +7,17 @@ tarball = ""
 src_def_config = ""
 dst_def_config = ""
 build_dir = ""
+build_module_dir = ""
 initramfs_name = "initramfs.cpio.gz"
 initramfs_file = ""
 build_arch = ""
 build_format = ""
 image_path = ""
 image_output_name = "linux_image"
-#LINUX_VERSION="linux-4.3"
-#LINUX_VERSION="linux-4.1.42"
+LINUX_VERSION = ""
+jobs_count = ""
+#LINUX_VERSION_FULL_STR="linux-4.3"
+#LINUX_VERSION_FULL_STR="linux-4.1.42"
 
 def set_global(args):
     global pkg_path
@@ -23,20 +26,25 @@ def set_global(args):
     global src_def_config
     global dst_def_config 
     global build_dir 
+    global build_module_dir 
     global initramfs_file
     global build_arch
     global build_format
     global image_path
+    global LINUX_VERSION
+    global jobs_count
     pkg_args = args["pkg_args"]
     def_cfg_version = "default_" + pkg_args["config"] + ".config"
     LINUX_VERSION = pkg_args["version"]
+    LINUX_VERSION_FULL_STR = "linux-" + LINUX_VERSION
     build_format = pkg_args["format"]
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
     arch = ops.getEnv("ARCH_ALT")
     build_arch = ops.getEnv("ARCH")
-    tarball = ops.path_join(pkg_path, LINUX_VERSION + ".tar.xz")
-    build_dir = ops.path_join(output_dir, LINUX_VERSION)
+    jobs_count = ops.getEnv("BUILD_JOBS_COUNT")
+    tarball = ops.path_join(pkg_path, LINUX_VERSION_FULL_STR + ".tar.xz")
+    build_dir = ops.path_join(output_dir, LINUX_VERSION_FULL_STR)
     src_def_config = ops.path_join(pkg_path, def_cfg_version)
     if arch == "armel":
         if build_format == "uImage":
@@ -51,9 +59,15 @@ def set_global(args):
 
     dst_def_config = ops.path_join(build_dir, ".config")
     initramfs_file = ops.path_join(iopc.getOutputRootDir(), initramfs_name)
+    build_module_dir = ops.path_join(ops.path_join(iopc.getOutputRootDir(), "kernel_modules"), LINUX_VERSION)
+    if jobs_count == "":
+        jobs_count = "2"
 
 def MAIN_ENV(args):
     set_global(args)
+
+    ops.exportEnv(ops.setEnv("LINUXKERNELROOT", build_dir))
+    ops.exportEnv(ops.setEnv("LINUXKERNELMODULEROOT", build_module_dir))
 
     return False
 
@@ -87,18 +101,21 @@ def MAIN_BUILD(args):
     ops.copyto(initramfs_file, build_dir)
     opt_format = ""
 
+    jobs_count = ops.getEnv("BUILD_JOBS_COUNT")
     extra_conf = []
     extra_conf.append("ARCH=" + build_arch)
+    extra_conf.append("-j" + jobs_count)
     if build_format == "uImage":
         opt_format = "uImage"
         extra_conf.append(opt_format)
     iopc.make(build_dir, extra_conf)
 
+    '''
     extra_conf = []
     extra_conf.append("modules")
     extra_conf.append("ARCH=" + build_arch)
     iopc.make(build_dir, extra_conf)
-
+    '''
     '''
     extra_conf = []
     extra_conf.append("ARCH=" + ops.getEnv("ARCH"))
@@ -112,6 +129,8 @@ def MAIN_INSTALL(args):
     set_global(args)
 
     ops.copyto(ops.path_join(build_dir, image_path), ops.path_join(iopc.getOutputRootDir(), image_output_name))
+    ops.mkdir(build_module_dir)
+    ops.touch(ops.path_join(build_module_dir, "modules.dep"))
     '''
     extra_conf = []
     extra_conf.append("modules_install")
