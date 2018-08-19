@@ -7,6 +7,10 @@
 [
 {"enabled":1, "name":"iopc_rpi2_4.1.42/000-workable.rpi2.patch"}
 ],
+"IOPC_QEMU_4.1.42":
+[
+{"enabled":1, "name":"iopc_qemu_4.1.42/000-arch.x86.kvm.vmx.c.patch"}
+],
 "IOPC_RPI2":
 [
 {"enabled":1, "name": "iopc_rpi2/001-arch.arm.Kconfig.patch"},

@@ -1,0 +1,11 @@
+--- arch/x86/kvm/vmx.c.orig	2018-08-08 09:59:48.942377710 +0800
++++ arch/x86/kvm/vmx.c	2018-08-08 09:59:56.610336123 +0800
+@@ -97,7 +97,7 @@
+  * VMX and be a hypervisor for its own guests. If nested=0, guests may not
+  * use VMX instructions.
+  */
+-static bool __read_mostly nested = 0;
++static bool __read_mostly nested = 1;
+ module_param(nested, bool, S_IRUGO);
+ 
+ static u64 __read_mostly host_xss;
