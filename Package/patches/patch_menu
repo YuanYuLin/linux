@@ -9,7 +9,11 @@
 ],
 "IOPC_QEMU_4.1.42":
 [
-{"enabled":1, "name":"iopc_qemu_4.1.42/000-arch.x86.kvm.vmx.c.patch"}
+{"enabled":1, "name":"iopc_qemu_4.1.42/000-arch.x86.kvm.vmx.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/001-drivers.net.ethernet.intel.e1000e.e1000.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/002-drivers.net.ethernet.intel.e1000e.ich8lan.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/003-drivers.net.ethernet.intel.e1000e.netdev.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/004-drivers.net.ethernet.intel.e1000e.hw.h.patch"}
 ],
 "IOPC_RPI2":
 [

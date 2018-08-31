@@ -1,0 +1,18 @@
+--- a/drivers/net/ethernet/intel/e1000e/hw.h	2017-06-29 22:55:48.000000000 +0800
++++ b/drivers/net/ethernet/intel/e1000e/hw.h	2018-08-29 11:28:27.308468133 +0800
+@@ -91,6 +91,7 @@
+ #define E1000_DEV_ID_PCH_SPT_I219_V		0x1570	/* SPT PCH */
+ #define E1000_DEV_ID_PCH_SPT_I219_LM2		0x15B7	/* SPT-H PCH */
+ #define E1000_DEV_ID_PCH_SPT_I219_V2		0x15B8	/* SPT-H PCH */
++#define E1000_DEV_ID_PCH_CNP_I219_LM7		0x15BB	/* CNP-H PCH */
+ 
+ #define E1000_REVISION_4	4
+ 
+@@ -113,6 +114,7 @@
+ 	e1000_pch2lan,
+ 	e1000_pch_lpt,
+ 	e1000_pch_spt,
++	e1000_pch_cnp
+ };
+ 
+ enum e1000_media_type {

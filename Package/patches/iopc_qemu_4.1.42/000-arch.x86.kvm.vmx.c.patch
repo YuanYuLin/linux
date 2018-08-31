@@ -1,5 +1,5 @@
---- arch/x86/kvm/vmx.c.orig	2018-08-08 09:59:48.942377710 +0800
-+++ arch/x86/kvm/vmx.c	2018-08-08 09:59:56.610336123 +0800
+--- a/arch/x86/kvm/vmx.c	2018-08-08 09:59:48.942377710 +0800
++++ b/arch/x86/kvm/vmx.c	2018-08-08 09:59:56.610336123 +0800
 @@ -97,7 +97,7 @@
   * VMX and be a hypervisor for its own guests. If nested=0, guests may not
   * use VMX instructions.

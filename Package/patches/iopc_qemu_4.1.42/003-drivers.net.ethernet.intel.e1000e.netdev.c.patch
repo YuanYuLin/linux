@@ -1,0 +1,18 @@
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c	2018-08-23 14:23:49.807367371 +0800
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c	2018-08-23 14:25:18.524816851 +0800
+@@ -71,6 +71,7 @@
+ 	[board_pch2lan]		= &e1000_pch2_info,
+ 	[board_pch_lpt]		= &e1000_pch_lpt_info,
+ 	[board_pch_spt]		= &e1000_pch_spt_info,
++	[board_pch_cnp]		= &e1000_pch_cnp_info,
+ };
+ 
+ struct e1000_reg_info {
+@@ -7244,6 +7245,7 @@
+ 	{ PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_SPT_I219_V), board_pch_spt },
+ 	{ PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_SPT_I219_LM2), board_pch_spt },
+ 	{ PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_SPT_I219_V2), board_pch_spt },
++	{ PCI_VDEVICE(INTEL, E1000_DEV_ID_PCH_CNP_I219_LM7), board_pch_cnp },
+ 
+ 	{ 0, 0, 0, 0, 0, 0, 0 }	/* terminate list */
+ };
