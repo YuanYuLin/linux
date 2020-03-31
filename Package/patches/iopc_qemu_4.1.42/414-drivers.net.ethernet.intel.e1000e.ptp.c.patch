@@ -1,0 +1,70 @@
+diff --git a/drivers/net/ethernet/intel/e1000e/ptp.c b/drivers/net/ethernet/intel/e1000e/ptp.c
+index 8d7b21d..ba1d22c 100644
+--- a/drivers/net/ethernet/intel/e1000e/ptp.c
++++ b/drivers/net/ethernet/intel/e1000e/ptp.c
+@@ -73,6 +73,8 @@ static int e1000e_phc_adjfreq(struct ptp_clock_info *ptp, s32 delta)
+ 
+ 	ew32(TIMINCA, timinca);
+ 
++	adapter->ptp_delta = delta;
++
+ 	spin_unlock_irqrestore(&adapter->systim_lock, flags);
+ 
+ 	return 0;
+@@ -115,6 +117,7 @@ static int e1000e_phc_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+ 
+ 	spin_lock_irqsave(&adapter->systim_lock, flags);
+ 	ns = timecounter_read(&adapter->tc);
++
+ 	spin_unlock_irqrestore(&adapter->systim_lock, flags);
+ 
+ 	*ts = ns_to_timespec64(ns);
+@@ -170,9 +173,12 @@ static void e1000e_systim_overflow_work(struct work_struct *work)
+ 						     systim_overflow_work.work);
+ 	struct e1000_hw *hw = &adapter->hw;
+ 	struct timespec64 ts;
++	u64 ns;
+ 
+-	adapter->ptp_clock_info.gettime64(&adapter->ptp_clock_info, &ts);
++	/* Update the timecounter */
++	ns = timecounter_read(&adapter->tc);
+ 
++	ts = ns_to_timespec64(ns);
+ 	e_dbg("SYSTIM overflow check at %lld.%09lu\n",
+ 	      (long long) ts.tv_sec, ts.tv_nsec);
+ 
+@@ -187,10 +193,10 @@ static const struct ptp_clock_info e1000e_ptp_clock_info = {
+ 	.n_per_out	= 0,
+ 	.n_pins		= 0,
+ 	.pps		= 0,
+-	.adjfreq	= e1000e_phc_adjfreq,
+-	.adjtime	= e1000e_phc_adjtime,
+-	.gettime64	= e1000e_phc_gettime,
+-	.settime64	= e1000e_phc_settime,
++	.adjfreq	= 0,//e1000e_phc_adjfreq,
++	.adjtime	= NULL,//e1000e_phc_adjtime,
++	.gettime64	= NULL,//e1000e_phc_gettime,
++	.settime64	= NULL,//e1000e_phc_settime,
+ 	.enable		= e1000e_phc_enable,
+ };
+ 
+@@ -221,8 +227,8 @@ void e1000e_ptp_init(struct e1000_adapter *adapter)
+ 	case e1000_pch2lan:
+ 	case e1000_pch_lpt:
+ 	case e1000_pch_spt:
+-		if (((hw->mac.type != e1000_pch_lpt) &&
+-		     (hw->mac.type != e1000_pch_spt)) ||
++	case e1000_pch_cnp:
++		if ((hw->mac.type < e1000_pch_lpt) ||
+ 		    (er32(TSYNCRXCTL) & E1000_TSYNCRXCTL_SYSCFI)) {
+ 			adapter->ptp_clock_info.max_adj = 24000000 - 1;
+ 			break;
+@@ -247,7 +253,7 @@ void e1000e_ptp_init(struct e1000_adapter *adapter)
+ 	if (IS_ERR(adapter->ptp_clock)) {
+ 		adapter->ptp_clock = NULL;
+ 		e_err("ptp_clock_register failed\n");
+-	} else {
++	} else if (adapter->ptp_clock) {
+ 		e_info("registered PHC clock\n");
+ 	}
+ }

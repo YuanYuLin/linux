@@ -10,10 +10,30 @@
 "IOPC_QEMU_4.1.42":
 [
 {"enabled":1, "name":"iopc_qemu_4.1.42/000-arch.x86.kvm.vmx.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/401-drivers.net.ethernet.intel.e1000e.80003es2lan.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/402-drivers.net.ethernet.intel.e1000e.82571.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/403-drivers.net.ethernet.intel.e1000e.defines.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/404-drivers.net.ethernet.intel.e1000e.e1000.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/405-drivers.net.ethernet.intel.e1000e.ethtool.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/406-drivers.net.ethernet.intel.e1000e.hw.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/407-drivers.net.ethernet.intel.e1000e.ich8lan.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/408-drivers.net.ethernet.intel.e1000e.ich8lan.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/409-drivers.net.ethernet.intel.e1000e.mac.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/410-drivers.net.ethernet.intel.e1000e.netdev.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/411-drivers.net.ethernet.intel.e1000e.nvm.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/412-drivers.net.ethernet.intel.e1000e.phy.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/413-drivers.net.ethernet.intel.e1000e.phy.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/414-drivers.net.ethernet.intel.e1000e.ptp.c.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/415-drivers.net.ethernet.intel.e1000e.regs.h.patch"}
+],
+"IOPC_QEMU_4.1.42_old":
+[
+{"enabled":1, "name":"iopc_qemu_4.1.42/000-arch.x86.kvm.vmx.c.patch"},
 {"enabled":1, "name":"iopc_qemu_4.1.42/001-drivers.net.ethernet.intel.e1000e.e1000.h.patch"},
 {"enabled":1, "name":"iopc_qemu_4.1.42/002-drivers.net.ethernet.intel.e1000e.ich8lan.c.patch"},
 {"enabled":1, "name":"iopc_qemu_4.1.42/003-drivers.net.ethernet.intel.e1000e.netdev.c.patch"},
-{"enabled":1, "name":"iopc_qemu_4.1.42/004-drivers.net.ethernet.intel.e1000e.hw.h.patch"}
+{"enabled":1, "name":"iopc_qemu_4.1.42/004-drivers.net.ethernet.intel.e1000e.hw.h.patch"},
+{"enabled":1, "name":"iopc_qemu_4.1.42/005-drivers.net.ethernet.intel.e1000e.ich8lan.h.patch"}
 ],
 "IOPC_RPI2":
 [

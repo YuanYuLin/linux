@@ -1,0 +1,156 @@
+diff --git a/drivers/net/ethernet/intel/e1000e/ethtool.c b/drivers/net/ethernet/intel/e1000e/ethtool.c
+index 11f486e..0ed97c6 100644
+--- a/drivers/net/ethernet/intel/e1000e/ethtool.c
++++ b/drivers/net/ethernet/intel/e1000e/ethtool.c
+@@ -897,28 +897,28 @@ static int e1000_reg_test(struct e1000_adapter *adapter, u64 *data)
+ 	case e1000_pch2lan:
+ 	case e1000_pch_lpt:
+ 	case e1000_pch_spt:
++	case e1000_pch_cnp:
+ 		mask |= (1 << 18);
+ 		break;
+ 	default:
+ 		break;
+ 	}
+ 
+-	if ((mac->type == e1000_pch_lpt) || (mac->type == e1000_pch_spt))
++	if (mac->type >= e1000_pch_lpt)
+ 		wlock_mac = (er32(FWSM) & E1000_FWSM_WLOCK_MAC_MASK) >>
+ 		    E1000_FWSM_WLOCK_MAC_SHIFT;
+ 
+ 	for (i = 0; i < mac->rar_entry_count; i++) {
+-		if ((mac->type == e1000_pch_lpt) ||
+-		    (mac->type == e1000_pch_spt)) {
++		if (mac->type >= e1000_pch_lpt) {
+ 			/* Cannot test write-protected SHRAL[n] registers */
+ 			if ((wlock_mac == 1) || (wlock_mac && (i > wlock_mac)))
+ 				continue;
+ 
+ 			/* SHRAH[9] different than the others */
+ 			if (i == 10)
+-				mask |= (1 << 30);
++				mask |= BIT(30);
+ 			else
+-				mask &= ~(1 << 30);
++				mask &= ~BIT(30);
+ 		}
+ 		if (mac->type == e1000_pch2lan) {
+ 			/* SHRAH[0,1,2] different than previous */
+@@ -926,7 +926,7 @@ static int e1000_reg_test(struct e1000_adapter *adapter, u64 *data)
+ 				mask &= 0xFFF4FFFF;
+ 			/* SHRAH[3] different than SHRAH[0,1,2] */
+ 			if (i == 4)
+-				mask |= (1 << 30);
++				mask |= BIT(30);
+ 			/* RAR[1-6] owned by management engine - skipping */
+ 			if (i > 0)
+ 				i += 6;
+@@ -1021,7 +1021,7 @@ static int e1000_intr_test(struct e1000_adapter *adapter, u64 *data)
+ 	/* Test each interrupt */
+ 	for (i = 0; i < 10; i++) {
+ 		/* Interrupt to test */
+-		mask = 1 << i;
++		mask = BIT(i);
+ 
+ 		if (adapter->flags & FLAG_IS_ICH) {
+ 			switch (mask) {
+@@ -1389,7 +1389,7 @@ static int e1000_integrated_phy_loopback(struct e1000_adapter *adapter)
+ 	case e1000_phy_82579:
+ 		/* Disable PHY energy detect power down */
+ 		e1e_rphy(hw, PHY_REG(0, 21), &phy_reg);
+-		e1e_wphy(hw, PHY_REG(0, 21), phy_reg & ~(1 << 3));
++		e1e_wphy(hw, PHY_REG(0, 21), phy_reg & ~BIT(3));
+ 		/* Disable full chip energy detect */
+ 		e1e_rphy(hw, PHY_REG(776, 18), &phy_reg);
+ 		e1e_wphy(hw, PHY_REG(776, 18), phy_reg | 1);
+@@ -1455,7 +1455,7 @@ static int e1000_set_82571_fiber_loopback(struct e1000_adapter *adapter)
+ 
+ 	/* disable autoneg */
+ 	ctrl = er32(TXCW);
+-	ctrl &= ~(1 << 31);
++	ctrl &= ~BIT(31);
+ 	ew32(TXCW, ctrl);
+ 
+ 	link = (er32(STATUS) & E1000_STATUS_LU);
+@@ -1516,8 +1516,19 @@ static int e1000_set_es2lan_mac_loopback(struct e1000_adapter *adapter)
+ static int e1000_setup_loopback_test(struct e1000_adapter *adapter)
+ {
+ 	struct e1000_hw *hw = &adapter->hw;
+-	u32 rctl;
+-
++	u32 rctl, fext_nvm11, tarc0;
++
++	if (hw->mac.type >= e1000_pch_spt) {
++		fext_nvm11 = er32(FEXTNVM11);
++		fext_nvm11 |= E1000_FEXTNVM11_DISABLE_MULR_FIX;
++		ew32(FEXTNVM11, fext_nvm11);
++		tarc0 = er32(TARC(0));
++		/* clear bits 28 & 29 (control of MULR concurrent requests) */
++		tarc0 &= 0xcfffffff;
++		/* set bit 29 (value of MULR requests is now 2) */
++		tarc0 |= 0x20000000;
++		ew32(TARC(0), tarc0);
++	}
+ 	if (hw->phy.media_type == e1000_media_type_fiber ||
+ 	    hw->phy.media_type == e1000_media_type_internal_serdes) {
+ 		switch (hw->mac.type) {
+@@ -1542,7 +1553,7 @@ static int e1000_setup_loopback_test(struct e1000_adapter *adapter)
+ static void e1000_loopback_cleanup(struct e1000_adapter *adapter)
+ {
+ 	struct e1000_hw *hw = &adapter->hw;
+-	u32 rctl;
++	u32 rctl, fext_nvm11, tarc0;
+ 	u16 phy_reg;
+ 
+ 	rctl = er32(RCTL);
+@@ -1550,6 +1561,17 @@ static void e1000_loopback_cleanup(struct e1000_adapter *adapter)
+ 	ew32(RCTL, rctl);
+ 
+ 	switch (hw->mac.type) {
++	case e1000_pch_spt:
++	case e1000_pch_cnp:
++		fext_nvm11 = er32(FEXTNVM11);
++		fext_nvm11 &= ~E1000_FEXTNVM11_DISABLE_MULR_FIX;
++		ew32(FEXTNVM11, fext_nvm11);
++		tarc0 = er32(TARC(0));
++		/* clear bits 28 & 29 (control of MULR concurrent requests) */
++		/* set bit 29 (value of MULR requests is now 0) */
++		tarc0 &= 0xcfffffff;
++		ew32(TARC(0), tarc0);
++		/* fall through */
+ 	case e1000_80003es2lan:
+ 		if (hw->phy.media_type == e1000_media_type_fiber ||
+ 		    hw->phy.media_type == e1000_media_type_internal_serdes) {
+@@ -2264,19 +2286,19 @@ static int e1000e_get_ts_info(struct net_device *netdev,
+ 				  SOF_TIMESTAMPING_RX_HARDWARE |
+ 				  SOF_TIMESTAMPING_RAW_HARDWARE);
+ 
+-	info->tx_types = (1 << HWTSTAMP_TX_OFF) | (1 << HWTSTAMP_TX_ON);
+-
+-	info->rx_filters = ((1 << HWTSTAMP_FILTER_NONE) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V1_L4_SYNC) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_L4_SYNC) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_L2_SYNC) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_EVENT) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_SYNC) |
+-			    (1 << HWTSTAMP_FILTER_PTP_V2_DELAY_REQ) |
+-			    (1 << HWTSTAMP_FILTER_ALL));
++	info->tx_types = BIT(HWTSTAMP_TX_OFF) | BIT(HWTSTAMP_TX_ON);
++
++	info->rx_filters = (BIT(HWTSTAMP_FILTER_NONE) |
++			    BIT(HWTSTAMP_FILTER_PTP_V1_L4_SYNC) |
++			    BIT(HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_L4_SYNC) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_L2_SYNC) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_EVENT) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_SYNC) |
++			    BIT(HWTSTAMP_FILTER_PTP_V2_DELAY_REQ) |
++			    BIT(HWTSTAMP_FILTER_ALL));
+ 
+ 	if (adapter->ptp_clock)
+ 		info->phc_index = ptp_clock_index(adapter->ptp_clock);

@@ -12,7 +12,7 @@
  	e1000_pch2lan,
  	e1000_pch_lpt,
  	e1000_pch_spt,
-+	e1000_pch_cnp
++	e1000_pch_cnp,
  };
  
  enum e1000_media_type {
